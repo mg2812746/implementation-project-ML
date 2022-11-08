@@ -21,7 +21,34 @@ def parse(LABEL, df):
     return label
 # Naive bayes algorithm
 def naive_bayes(data_list, test_list):
-    return None
+    def discretize(label, cutoff, name):
+        if name is not None:
+            # Discretize class
+            for instance in label:
+                if instance is name:
+                    instance = 1
+                else:
+                    instance = 0
+        else:
+            # Discretize integer label
+            for instance in label:
+                if instance > cutoff:
+                    instance = 1
+                else:
+                    instance = 0
+    # Parse data from pandas dataframes into parallel lists
+    for labels in LABELS: locals()[labels] = parse(labels, ad_df)
+    for labels in LABELS: locals()[f"test_{labels}"] = parse(labels, test_df)
+    # Discretize continuous values
+    discretize(age, 40)
+    discretize(fnlwgt, 100000)
+    discretize(education-num, 40)
+    discretize(capital-gain, 1) #any capital gain
+    discretize(capital-loss, 1) #any capital loss
+    discretize(hours-per-week, 39)  #full time or part time
+    discretize(native-country,)
+    # 
+    
 
 # Program begins here
 
@@ -33,11 +60,5 @@ LABELS = ['age','workclass','fnlwgt','education','education-num','marital-status
 # Get data from file
 ad_df = store_data_from_file(ADULT_DATA)   
 test_df = store_data_from_file(TEST_DATA)
-# Parse data from pandas dataframes adult and test into appropriate variables
-for labels in LABELS:
-    locals()[labels] = parse(labels, ad_df)
-
-# Parse data
-
 # Naive bayes implementation
 naive_bayes(ad_df, test_df)
