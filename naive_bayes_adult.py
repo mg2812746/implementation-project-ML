@@ -228,33 +228,13 @@ def naive_bayes(ad_df, test_df, LABELS):
             else: prob_yes[12]=prob_from_list(P_GT50K_0,12); prob_no[12]=prob_from_list(P_LT50K_0,12)
             # After we get our probabilities, we compare the probability of yes vs no overall 
             # Then classify based on which probability is greater
-            prob_yes_fin=0
-            prob_no_fin=0
-            avoid_yes=0
-            avoid_no=0
-            for i in range(0,len(prob_yes)):
-                if(prob_yes[i]!=0):
-                    prob_yes_fin=prob_yes[i]
-                    avoid_yes=i
-                    break
-            for i in range(0,len(prob_no)):
-                if(prob_yes[i]!=0):
-                    prob_no_fin=prob_no[i]
-                    avoid_no=i
-                    break
+            prob_yes_fin=prob_yes[0]
+            prob_no_fin=prob_no[0]
             for i in range(1,len(prob_yes)):
-                if(prob_yes[i]!=0 and avoid_yes != i):
-                    temp=prob_yes[i]
-                    if(prob_yes_fin*temp!=0):
-                        prob_yes_fin=prob_yes_fin*temp
-                    else: 
-                        break
-                if(prob_no[i]!=0 and avoid_no != i):
-                    temp=prob_no[i]
-                    if(prob_no_fin*temp!=0):
-                        prob_no_fin=prob_no_fin*temp
-                    else: 
-                        break
+                temp=prob_yes[i]
+                prob_yes_fin=prob_yes_fin*temp
+                temp=prob_no[i]
+                prob_no_fin=prob_no_fin*temp
                 if(i==11 and prob_yes_fin > prob_no_fin):
                     classified.append(1)
                 if(i==11 and prob_no_fin >= prob_yes_fin):
