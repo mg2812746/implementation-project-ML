@@ -9,12 +9,13 @@ Summary:
 
 # Libraries
 import pandas as pd
-
+from sklearn import metrics
+import matplotlib.pyplot as plt
 # Gets data from file using pandas library
-def store_data_from_file(FILE, LABELS):
+def store_data_from_file(FILE, FEATURES):
     try:
         data = pd.read_csv(f"adult_data/{FILE}", sep = ',',
-                           header=None, names = LABELS)
+                           header=None, names = FEATURES)
         print(f"{FILE} read successfully")
         return data
     except ValueError:
@@ -24,20 +25,20 @@ def store_data_from_file(FILE, LABELS):
     except:
         print("something went wrong")
 
-# Parse data by labels (columns)
-def parse(LABEL, df):
-    label = df[f'{LABEL}']
-    return label
+# Parse data by features (columns)
+def parse(FEATURE, df):
+    feature = df[f'{FEATURE}']
+    return feature
 
 # Naive bayes algorithm
-def naive_bayes(ad_df, test_df, LABELS):
+def naive_bayes(ad_df, test_df, FEATURES):
     def discretize(label, cutoff, name): #binary discretization procedure
         if name != None:
-            # Discretize class label
+            # Discretize class feature
             disc_label=label.where(label == name, 0)
             disc_label=disc_label.where(disc_label == 0, 1)
         else:
-            # Discretize integer label
+            # Discretize integer feature
             disc_label=label.where(label < cutoff, 1)
             disc_label=disc_label.where(disc_label == 1, 0)
         return disc_label
@@ -50,63 +51,37 @@ def naive_bayes(ad_df, test_df, LABELS):
         a_cnt_n=0;f_cnt_n=0;e_cnt_n=0;m_cnt_n=0;o_cnt_n=0;r_cnt_n=0;rc_cnt_n=0;sx_cnt_n=0;edn_cnt_n=0;edn_cnt_n=0;cpgain_cnt_n=0
         cploss_cnt_n=0;hrs_cnt_n=0;nc_cnt_n=0
         if y_or_n:
-            for a,f,e,m,o,r,rc,sx,edn,cpgain,cploss,hrs,nc,fif in zip(age,fnlwgt,edu,ms,oc,rel,rc,sx,ed_num,cap_gain,cap_loss,hrs_pr_wk,ntv_cntry,_50k):
-                # Generate total count of each instance
-                if a == 1 and fif == 1: a_cnt+=1 
-                if f == 1 and fif == 1: f_cnt+=1
-                if e == 1 and fif == 1: e_cnt+=1
-                if m == 1 and fif == 1: m_cnt+=1
-                if o == 1 and fif == 1: o_cnt+=1
-                if r == 1 and fif == 1: r_cnt+=1
-                if rc == 1 and fif == 1: rc_cnt+=1 
-                if sx == 1 and fif == 1: sx_cnt+=1
-                if edn == 1 and fif == 1: edn_cnt+=1
-                if cpgain == 1 and fif == 1: cpgain_cnt+=1
-                if cploss == 1 and fif == 1: cploss_cnt+=1
-                if hrs == 1 and fif == 1: hrs_cnt+=1
-                if nc == 1 and fif == 1: nc_cnt+=1
-                if a == 1 and fif == 0: a_cnt_n+=1 
-                if f == 1 and fif == 0: f_cnt_n+=1
-                if e == 1 and fif == 0: e_cnt_n+=1
-                if m == 1 and fif == 0: m_cnt_n+=1
-                if o == 1 and fif == 0: o_cnt_n+=1
-                if r == 1 and fif == 0: r_cnt_n+=1
-                if rc == 1 and fif == 0: rc_cnt_n+=1 
-                if sx == 1 and fif == 0: sx_cnt_n+=1
-                if edn == 1 and fif == 0: edn_cnt_n+=1
-                if cpgain == 1 and fif == 0: cpgain_cnt_n+=1
-                if cploss == 1 and fif == 0: cploss_cnt_n+=1
-                if hrs == 1 and fif == 0: hrs_cnt_n+=1
-                if nc == 1 and fif == 0: nc_cnt_n+=1
+            x=1
         else:
-            for a,f,e,m,o,r,rc,sx,edn,cpgain,cploss,hrs,nc,fif in zip(age,fnlwgt,edu,ms,oc,rel,rc,sx,ed_num,cap_gain,cap_loss,hrs_pr_wk,ntv_cntry,_50k):
-                # Generate total count of each instance
-                if a == 0 and fif == 1: a_cnt+=1 
-                if f == 0 and fif == 1: f_cnt+=1
-                if e == 0 and fif == 1: e_cnt+=1
-                if m == 0 and fif == 1: m_cnt+=1
-                if o == 0 and fif == 1: o_cnt+=1
-                if r == 0 and fif == 1: r_cnt+=1
-                if rc == 0 and fif == 1: rc_cnt+=1 
-                if sx == 0 and fif == 1: sx_cnt+=1
-                if edn == 0 and fif == 1: edn_cnt+=1
-                if cpgain == 0 and fif == 1: cpgain_cnt+=1
-                if cploss == 0 and fif == 1: cploss_cnt+=1
-                if hrs == 0 and fif == 1: hrs_cnt+=1
-                if nc == 0 and fif == 1: nc_cnt+=1
-                if a == 0 and fif == 0: a_cnt_n+=1 
-                if f == 0 and fif == 0: f_cnt_n+=1
-                if e == 0 and fif == 0: e_cnt_n+=1
-                if m == 0 and fif == 0: m_cnt_n+=1
-                if o == 0 and fif == 0: o_cnt_n+=1
-                if r == 0 and fif == 0: r_cnt_n+=1
-                if rc == 0 and fif == 0: rc_cnt_n+=1 
-                if sx == 0 and fif == 0: sx_cnt_n+=1
-                if edn == 0 and fif == 0: edn_cnt_n+=1
-                if cpgain == 0 and fif == 0: cpgain_cnt_n+=1
-                if cploss == 0 and fif == 0: cploss_cnt_n+=1
-                if hrs == 0 and fif == 0: hrs_cnt_n+=1
-                if nc == 0 and fif == 0: nc_cnt_n+=1
+            x=0
+        for a,f,e,m,o,r,rc,sx,edn,cpgain,cploss,hrs,nc,fif in zip(age,fnlwgt,edu,ms,oc,rel,rc,sx,ed_num,cap_gain,cap_loss,hrs_pr_wk,ntv_cntry,_50k):
+            # Generate total count of each instance
+            if a == x and fif == 1: a_cnt+=1 
+            if f == x and fif == 1: f_cnt+=1
+            if e == x and fif == 1: e_cnt+=1
+            if m == x and fif == 1: m_cnt+=1
+            if o == x and fif == 1: o_cnt+=1
+            if r == x and fif == 1: r_cnt+=1
+            if rc == x and fif == 1: rc_cnt+=1 
+            if sx == x and fif == 1: sx_cnt+=1
+            if edn == x and fif == 1: edn_cnt+=1
+            if cpgain == x and fif == 1: cpgain_cnt+=1
+            if cploss == x and fif == 1: cploss_cnt+=1
+            if hrs == x and fif == 1: hrs_cnt+=1
+            if nc == x and fif == 1: nc_cnt+=1
+            if a == x and fif == 0: a_cnt_n+=1 
+            if f == x and fif == 0: f_cnt_n+=1
+            if e == x and fif == 0: e_cnt_n+=1
+            if m == x and fif == 0: m_cnt_n+=1
+            if o == x and fif == 0: o_cnt_n+=1
+            if r == x and fif == 0: r_cnt_n+=1
+            if rc == x and fif == 0: rc_cnt_n+=1 
+            if sx == x and fif == 0: sx_cnt_n+=1
+            if edn == x and fif == 0: edn_cnt_n+=1
+            if cpgain == x and fif == 0: cpgain_cnt_n+=1
+            if cploss == x and fif == 0: cploss_cnt_n+=1
+            if hrs == x and fif == 0: hrs_cnt_n+=1
+            if nc == x and fif == 0: nc_cnt_n+=1
         # Divide by total number of instances for label=1
         a_cnt/=INST; f_cnt/=INST; e_cnt/=INST; m_cnt/=INST; o_cnt/=INST; r_cnt/=INST
         rc_cnt/=INST; sx_cnt/=INST; edn_cnt/=INST; cpgain_cnt/=INST; cploss_cnt/=INST
@@ -120,9 +95,9 @@ def naive_bayes(ad_df, test_df, LABELS):
                 a_cnt_n,f_cnt_n,e_cnt_n,m_cnt_n,o_cnt_n,\
                 r_cnt_n,rc_cnt_n,sx_cnt_n,edn_cnt_n,\
                 edn_cnt_n,cpgain_cnt_n,cploss_cnt_n,hrs_cnt_n,nc_cnt_n
-    def gen_list_prob(LABELS,ad_df): #Creates a list of probabilities
-        # Parse data from pandas dataframes into parallel lists
-        for label in LABELS: globals()[label] = parse(label, ad_df)
+    def gen_list_prob(FEATURES,ad_df): #Creates a list of probabilities
+        # Parse data from pandas dataframes into dynamically created parallel lists
+        for label in FEATURES: globals()[label] = parse(label, ad_df)
         # Discretize labels
         disc_age=discretize(age, 40, None) # 0 for <=40 1 for >40
         disc_fnlwgt=discretize(fnlwgt, 100000, None) # 0 for <=100000 1 for >100000
@@ -172,10 +147,9 @@ def naive_bayes(ad_df, test_df, LABELS):
                 6=relationship, 7=race , 8=sex, 9=capital-gain, 10=capital-loss, 11=hours-per-week, 12=native-country
         """
         return LIST_P[index]  
-    def test(LABELS,test_df,P_GT50K_1,P_LT50K_1,P_GT50K_0,P_LT50K_0): #Returns a list of all classified test instances for >50k or <=50k
-        
+    def test(FEATURES,test_df,P_GT50K_1,P_LT50K_1,P_GT50K_0,P_LT50K_0): #Returns a list of all classified test instances for >50k or <=50k
         classified=[]
-        for label in LABELS: globals()[f"test_{label}"] = parse(label, test_df)
+        for feature in FEATURES: globals()[f"test_{feature}"] = parse(feature, test_df)
         # Discretize test labels
         test_disc_age=discretize(test_age, 40, None) # 0 for <=40 1 for >40
         test_disc_fnlwgt=discretize(test_fnlwgt, 100000, None) # 0 for <=100000 1 for >100000
@@ -228,16 +202,37 @@ def naive_bayes(ad_df, test_df, LABELS):
             else: prob_yes[12]=prob_from_list(P_GT50K_0,12); prob_no[12]=prob_from_list(P_LT50K_0,12)
             # After we get our probabilities, we compare the probability of yes vs no overall 
             # Then classify based on which probability is greater
-            prob_yes_fin=prob_yes[0]
-            prob_no_fin=prob_no[0]
+            prob_yes_fin=0
+            prob_no_fin=0
+            avoid_yes=0
+            avoid_no=0
+            for i in range(0,len(prob_yes)):
+                if(prob_yes[i]!=0):
+                    prob_yes_fin=prob_yes[i]
+                    avoid_yes=i
+                    break
+            for i in range(0,len(prob_no)):
+                if(prob_yes[i]!=0):
+                    prob_no_fin=prob_no[i]
+                    avoid_no=i
+                    break
             for i in range(1,len(prob_yes)):
-                temp=prob_yes[i]
-                prob_yes_fin=prob_yes_fin*temp
-                temp=prob_no[i]
-                prob_no_fin=prob_no_fin*temp
-                if(i==11 and prob_yes_fin > prob_no_fin):
+                if(prob_yes[i]!=0 and avoid_yes != i):
+                    temp=prob_yes[i]
+                    if(prob_yes_fin*temp!=0):
+                        prob_yes_fin=prob_yes_fin*temp
+                    else: 
+                        break
+                if(prob_no[i]!=0 and avoid_no != i):
+                    temp=prob_no[i]
+                    if(prob_no_fin*temp!=0):
+                        prob_no_fin=prob_no_fin*temp
+                    else: 
+                        break
+                if(i==12 and prob_yes_fin > prob_no_fin):
                     classified.append(1)
-                if(i==11 and prob_no_fin >= prob_yes_fin):
+                    
+                if(i==12 and prob_no_fin >= prob_yes_fin):
                     classified.append(0)
         return classified, test_disc_50k
     def error(test_disc_50k, classified_50k): # Returns percent error
@@ -247,29 +242,37 @@ def naive_bayes(ad_df, test_df, LABELS):
             if i!=j: num_errors+=1
         return (num_errors/INST)*100 # Return percent error
     # Get list of all probabilities
-    P_GT50K_1,P_LT50K_1,P_GT50K_0,P_LT50K_0=gen_list_prob(LABELS,ad_df)
+    P_GT50K_1,P_LT50K_1,P_GT50K_0,P_LT50K_0=gen_list_prob(FEATURES,ad_df)
     # Get list of classified values from test and actual results
-    classified, test_disc_50k=test(LABELS,test_df,P_GT50K_1,P_LT50K_1,P_GT50K_0,P_LT50K_0)
+    classified, test_disc_50k=test(FEATURES,test_df,P_GT50K_1,P_LT50K_1,P_GT50K_0,P_LT50K_0)
+    # Convert pandas dataframe to list
+    t_list=test_disc_50k.tolist()
     # Compute percent error
     errors=error(test_disc_50k, classified)
-    # Display percent error
-    print(f"Percent error: %{errors:.2f}")
+    # Compute accuracy
+    Accuracy = metrics.accuracy_score(t_list, classified)
+    # Compute confusion matrix
+    confusion_matrix = metrics.confusion_matrix(t_list, classified)
+    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [False, True])
+    cm_display.plot()
+    plt.show()
+    print(f"{Accuracy:.2f}")
     
 # Program begins here
 def main():
     # Names of files we will read from
     ADULT_DATA = 'adult.data'
     TEST_DATA = 'adult.test'
-    # Labels associated with data
-    LABELS = ['age','workclass','fnlwgt','education','education_num',
+    # Features associated with data
+    FEATURES = ['age','workclass','fnlwgt','education','education_num',
             'marital_status','occupation','relationship','race',
             'sex','capital_gain','capital_loss','hours_per_week',
             'native_country','_50k']
     # Get data from file
-    ad_df = store_data_from_file(ADULT_DATA, LABELS)   
-    test_df = store_data_from_file(TEST_DATA, LABELS)
+    ad_df = store_data_from_file(ADULT_DATA, FEATURES)   
+    test_df = store_data_from_file(TEST_DATA, FEATURES)
     # Naive bayes implementation
-    naive_bayes(ad_df, test_df, LABELS)
+    naive_bayes(ad_df, test_df, FEATURES)
 
 if __name__ == "__main__":
     main()
