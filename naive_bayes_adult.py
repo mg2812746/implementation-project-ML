@@ -31,7 +31,10 @@ def parse(FEATURE, df):
     return feature
 
 # Naive bayes algorithm
-def naive_bayes(ad_df, test_df, FEATURES):
+def naive_bayes(ad_df, test_df, FEATURES): 
+    def preprocess(income): #balance (t) the number of instances labeled 0 and 1 for income
+        
+        return income
     def discretize(label, cutoff, name): #binary discretization procedure
         if name != None:
             # Discretize class feature
