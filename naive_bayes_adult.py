@@ -32,9 +32,6 @@ def parse(FEATURE, df):
 
 # Naive bayes algorithm
 def naive_bayes(ad_df, test_df, FEATURES): 
-    def preprocess(income): #balance (t) the number of instances labeled 0 and 1 for income
-        
-        return income
     def discretize(label, cutoff, name): #binary discretization procedure
         if name != None:
             # Discretize class feature
@@ -205,37 +202,37 @@ def naive_bayes(ad_df, test_df, FEATURES):
             else: prob_yes[12]=prob_from_list(P_GT50K_0,12); prob_no[12]=prob_from_list(P_LT50K_0,12)
             # After we get our probabilities, we compare the probability of yes vs no overall 
             # Then classify based on which probability is greater
-            prob_yes_fin=0
-            prob_no_fin=0
+            prob_yes_final=0
+            prob_no_final=0
             avoid_yes=0
             avoid_no=0
             for i in range(0,len(prob_yes)):
                 if(prob_yes[i]!=0):
-                    prob_yes_fin=prob_yes[i]
+                    prob_yes_final=prob_yes[i]
                     avoid_yes=i
                     break
             for i in range(0,len(prob_no)):
                 if(prob_yes[i]!=0):
-                    prob_no_fin=prob_no[i]
+                    prob_no_final=prob_no[i]
                     avoid_no=i
                     break
             for i in range(1,len(prob_yes)):
                 if(prob_yes[i]!=0 and avoid_yes != i):
                     temp=prob_yes[i]
-                    if(prob_yes_fin*temp!=0):
-                        prob_yes_fin=prob_yes_fin*temp
+                    if(prob_yes_final*temp!=0):
+                        prob_yes_final=prob_yes_final*temp
                     else: 
                         break
                 if(prob_no[i]!=0 and avoid_no != i):
                     temp=prob_no[i]
-                    if(prob_no_fin*temp!=0):
-                        prob_no_fin=prob_no_fin*temp
+                    if(prob_no_final*temp!=0):
+                        prob_no_final=prob_no_final*temp
                     else: 
                         break
-                if(i==12 and prob_yes_fin > prob_no_fin):
+                if(i==12 and prob_yes_final > prob_no_final):
                     classified.append(1)
                     
-                if(i==12 and prob_no_fin >= prob_yes_fin):
+                if(i==12 and prob_no_final >= prob_yes_final):
                     classified.append(0)
         return classified, test_disc_50k
     def error(test_disc_50k, classified_50k): # Returns percent error
@@ -253,13 +250,13 @@ def naive_bayes(ad_df, test_df, FEATURES):
     # Compute percent error
     errors=error(test_disc_50k, classified)
     # Compute accuracy
-    Accuracy = metrics.accuracy_score(t_list, classified)
+    accuracy = metrics.accuracy_score(t_list, classified)
     # Compute confusion matrix
     confusion_matrix = metrics.confusion_matrix(t_list, classified)
     cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [False, True])
     cm_display.plot()
     plt.show()
-    print(f"{Accuracy:.2f}")
+    print(f"{accuracy:.2f}")
     
 # Program begins here
 def main():
