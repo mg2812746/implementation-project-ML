@@ -6,11 +6,11 @@ Summary:
     50k income.
     
 """
-
 # Libraries
 import pandas as pd
 from sklearn import metrics
 import matplotlib.pyplot as plt
+
 # Gets data from file using pandas library
 def store_data_from_file(FILE, FEATURES):
     try:
@@ -42,6 +42,7 @@ def naive_bayes(ad_df, test_df, FEATURES):
             disc_label=label.where(label < cutoff, 1)
             disc_label=disc_label.where(disc_label == 1, 0)
         return disc_label
+    
     def prob(age,fnlwgt,edu,ms,oc,rel,rc,sx,ed_num,cap_gain,cap_loss,hrs_pr_wk,ntv_cntry,_50k,y_or_n): # Generate relevant probabilities
         INST=32561 # No of instances
         # P(X|>50k)
@@ -95,6 +96,7 @@ def naive_bayes(ad_df, test_df, FEATURES):
                 a_cnt_n,f_cnt_n,e_cnt_n,m_cnt_n,o_cnt_n,\
                 r_cnt_n,rc_cnt_n,sx_cnt_n,edn_cnt_n,\
                 edn_cnt_n,cpgain_cnt_n,cploss_cnt_n,hrs_cnt_n,nc_cnt_n
+    
     def gen_list_prob(FEATURES,ad_df): #Creates a list of probabilities
         # Parse data from pandas dataframes into dynamically created parallel lists
         for label in FEATURES: globals()[label] = parse(label, ad_df)
@@ -113,6 +115,7 @@ def naive_bayes(ad_df, test_df, FEATURES):
         disc_hours_per_week=discretize(hours_per_week, 39, None)  # full time or part time
         disc_native_country=discretize(native_country,None,' United-States') # 0 if not from US, 1 if from US
         disc_50k=discretize(_50k,None,' >50K') # 1 for greater than 50k 0 for lower than 50k  
+
         # Generate all probabilities for each label (X)
         # P(X=1|>50k) and P(X=1|<=50k)
         a_cnt,f_cnt,e_cnt,m_cnt,o_cnt,r_cnt,rc_cnt,sx_cnt,edn_cnt,edn_cnt,cpgain_cnt,\
@@ -122,6 +125,7 @@ def naive_bayes(ad_df, test_df, FEATURES):
             disc_relationship,disc_race,disc_sex,disc_education_num,
             disc_capital_gain, disc_capital_loss, disc_hours_per_week, 
             disc_native_country, disc_50k, True)
+        
         # <=50k P(X=0|>50k) and P(X=0|<=50k)
         a_cnt_0,f_cnt_0,e_cnt_0,m_cnt_0,o_cnt_0,r_cnt_0,rc_cnt_0,sx_cnt_0,edn_cnt_0,edn_cnt_0,cpgain_cnt_0,\
         cploss_cnt_0,hrs_cnt_0,nc_cnt_0,a_cnt_n_0,f_cnt_n_0,e_cnt_n_0,m_cnt_n_0,o_cnt_n_0,\
@@ -130,6 +134,7 @@ def naive_bayes(ad_df, test_df, FEATURES):
         =prob(disc_age,disc_fnlwgt,disc_education,disc_marital_status,
             disc_occupation,disc_relationship,disc_race,disc_sex,disc_education_num,
             disc_capital_gain, disc_capital_loss, disc_hours_per_week, disc_native_country, disc_50k, False)
+        
         # Store probabilities in appropriate lists
         LIST_P_GT50K_1=[a_cnt,f_cnt,e_cnt,m_cnt,o_cnt,r_cnt,rc_cnt,sx_cnt,edn_cnt,edn_cnt,cpgain_cnt,
                         cploss_cnt,hrs_cnt,nc_cnt]
@@ -141,12 +146,14 @@ def naive_bayes(ad_df, test_df, FEATURES):
                         r_cnt_n_0,rc_cnt_n_0,sx_cnt_n_0,edn_cnt_n_0,edn_cnt_n_0,cpgain_cnt_n_0,
                         cploss_cnt_n_0,hrs_cnt_n_0,nc_cnt_n_0]
         return LIST_P_GT50K_1,LIST_P_LT50K_1,LIST_P_GT50K_0,LIST_P_LT50K_0
+    
     def prob_from_list(LIST_P,index): # Search function that returns needed probabilities from list
         """   INDICES ARE AS FOLLOWS:
                 0=age, 1=fnlwgt, 2=education, 3=education_num, 4=marital-status, 5=occupation
                 6=relationship, 7=race , 8=sex, 9=capital-gain, 10=capital-loss, 11=hours-per-week, 12=native-country
         """
         return LIST_P[index]  
+    
     def test(FEATURES,test_df,P_GT50K_1,P_LT50K_1,P_GT50K_0,P_LT50K_0): #Returns a list of all classified test instances for >50k or <=50k
         classified=[]
         for feature in FEATURES: globals()[f"test_{feature}"] = parse(feature, test_df)
@@ -165,6 +172,7 @@ def naive_bayes(ad_df, test_df, FEATURES):
         test_disc_hours_per_week=discretize(test_hours_per_week, 39, None)  # full time or part time
         test_disc_native_country=discretize(test_native_country,None,' United-States') # 0 if not from US, 1 if from US
         test_disc_50k=discretize(test__50k,None,' >50K') # THESE WILL BE USED TO COMPARE COMPUTED CLASSIFICATION VS ACTUAL 
+
         # Traverse through all test instances and classify each one, which is then stored into a list and then return that list
         for a,f,e,m,o,r,rc,sx,edn,cpgain,cploss,hrs,nc in zip(test_disc_age,test_disc_fnlwgt,
                                                                   test_disc_education,test_disc_marital_status,test_disc_occupation,
@@ -235,12 +243,14 @@ def naive_bayes(ad_df, test_df, FEATURES):
                 if(i==12 and prob_no_final >= prob_yes_final):
                     classified.append(0)
         return classified, test_disc_50k
+    
     def error(test_disc_50k, classified_50k): # Returns percent error
         INST=16281
         num_errors=0
         for i,j in zip(test_disc_50k,classified_50k):
             if i!=j: num_errors+=1
         return (num_errors/INST)*100 # Return percent error
+    
     # Get list of all probabilities
     P_GT50K_1,P_LT50K_1,P_GT50K_0,P_LT50K_0=gen_list_prob(FEATURES,ad_df)
     # Get list of classified values from test and actual results
