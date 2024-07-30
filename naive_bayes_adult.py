@@ -265,8 +265,8 @@ def naive_bayes(ad_df, test_df, FEATURES):
     confusion_matrix = metrics.confusion_matrix(t_list, classified)
     cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [False, True])
     cm_display.plot()
-    plt.show()
-    print(f"{accuracy:.2f}")
+    plt.savefig('confusion_matrix.png')
+    print(f"accuracy: {accuracy:.2f}")
     
 # Program begins here
 def main():
